@@ -21,7 +21,7 @@ class BusTest {
                 .number(900)
                 .build();
 
-
+        assertNotNull(bus900);
 
     }
 
