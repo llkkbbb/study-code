@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 public class Bus {
 
-    private final int PAYMENT = 1000;
+    private final int payment = 1000;
     private Long id;
     private String name;
     private int number;
@@ -31,4 +31,10 @@ public class Bus {
         this.name = name;
         this.number = number;
     }
+
+    public Member getOn(Member member) {
+        this.members.add(member);
+        return member;
+    }
+
 }

@@ -27,4 +27,21 @@ public class Member {
         this.name = name;
         this.money = money;
     }
+
+    public Member getOnBus(Bus bus) {
+        checkMoney(bus);
+        this.getOnTheBusDateTime = LocalDateTime.now();
+        Member member = bus.getOn(this);
+        return member;
+    }
+
+    private void checkMoney(Bus bus) {
+        if (this.money < bus.getPayment()) {
+            throw new IllegalArgumentException("잔액이 부족합니다.");
+        }
+
+        this.money -= bus.getPayment();
+    }
+
+
 }
