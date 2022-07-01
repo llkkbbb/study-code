@@ -31,8 +31,7 @@ public class Member {
     public Member getOnBus(Bus bus) {
         checkMoney(bus);
         this.getOnTheBusDateTime = LocalDateTime.now();
-        Member member = bus.getOn(this);
-        return member;
+        return bus.getOn(this);
     }
 
     private void checkMoney(Bus bus) {
