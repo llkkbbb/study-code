@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.atomicIntegerFieldUpdater;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -77,6 +78,33 @@ class MemberTest {
         assertThat(member.getGetOffTheBusDateTime()).isBefore(LocalDateTime.now()); // 하차 시간 검증
     }
 
+    @Test
+    @DisplayName("버스 환승 테스트 -> 하차 후 10초 안에 다시 승차하면 환승된다. 환승 시에 버스 비용 지불은 안된다.")
+    void checkTransfer() {
+        // given
+        int money = 10000;
+        Member member = createMember(money); // 멤버 생성
+        Bus bus = createBus(); // 버스 생성
+        member.getOnBus(bus); // 승차
+        member.getOffBus(bus); // 하차
+
+        // when
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            member.getOnBus(bus);
+        });
+        thread.run(); // 환승
+
+        // then
+        assertThat(bus.getPassengers()).isEqualTo(1); // 하차 후 다시 환승 한거니 승객수는 1명이다.
+        assertThat(member.getMoney()).isEqualTo(money - bus.getPayment()); // 환승은 비용 지불을 하지 않는다. 처음 승차 한 비용만 지불된다.
+        assertThat(member.getGetOffTheBusDateTime()).isBefore(LocalDateTime.now()); // 하차 시간은 현재 시간보다 이전이다.
+        assertThat(member.getGetOnTheBusDateTime()).isBefore(LocalDateTime.now()); // 승차 시간은 현재 시간보다 이전이다.
+    }
 
 
     private Member createMember(int money) {
