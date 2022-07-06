@@ -3,6 +3,7 @@ package com.example.blogcode.project.domain;
 import lombok.Builder;
 import lombok.Getter;
 
+
 import java.time.LocalDateTime;
 
 /**
@@ -32,8 +33,14 @@ public class Member {
     public Member getOnBus(Bus bus) {
         checkMoney(bus);
         busPayment(bus);
-
         this.getOnTheBusDateTime = LocalDateTime.now();
+
+        // 환승 로직
+        if (bus.checkTransfer(this)) {
+            System.out.println("환승입니다.");
+            this.money += bus.getPayment();
+        }
+
         return bus.getOn(this);
     }
 
