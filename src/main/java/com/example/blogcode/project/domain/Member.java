@@ -28,19 +28,31 @@ public class Member {
         this.money = money;
     }
 
+    // 버스 승차
     public Member getOnBus(Bus bus) {
         checkMoney(bus);
+        busPayment(bus);
+
         this.getOnTheBusDateTime = LocalDateTime.now();
         return bus.getOn(this);
     }
 
+    // 잔액 확인
     private void checkMoney(Bus bus) {
         if (this.money < bus.getPayment()) {
             throw new IllegalArgumentException("잔액이 부족합니다.");
         }
+    }
 
+    // 버스 비용 지불
+    private void busPayment(Bus bus) {
         this.money -= bus.getPayment();
     }
 
+    // 버스 하차
+    public void getOffBus(Bus bus) {
+        this.getOffTheBusDateTime = LocalDateTime.now();
+        bus.getOff(this);
+    }
 
 }
